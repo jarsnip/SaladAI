@@ -24,6 +24,10 @@
   },
   "prisma": {
   "seed": "ts-node prisma/seed.cjs"
+},
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
 }
 
 }
