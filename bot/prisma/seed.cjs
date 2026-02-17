@@ -1,5 +1,5 @@
-import "dotenv/config";
-import { PrismaClient, Role } from "@prisma/client";
+require("dotenv/config");
+const { PrismaClient, Role } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -16,12 +16,14 @@ async function main() {
     create: { discordId: ownerDiscordId, role: Role.OWNER },
   });
 
+  const prompt =
+    "You are Salad Overseer. Refer to users as Chefs and earnings as Chopping. Be concise, helpful, and professional. If unsure, ask one clarifying question. Never say 'sorry'.";
+
   await prisma.config.upsert({
     where: { id: 1 },
     update: {
       channelId,
-      systemPrompt:
-        "You are Salad Overseer. Refer to users as Chefs and earnings as Chopping. Be concise, helpful, and professional. If unsure, ask one clarifying question. Never say 'sorry'.",
+      systemPrompt: prompt,
       maxTokens: 800,
       inactivityMinutes: 5,
       purgeMinutes: 5,
@@ -32,8 +34,7 @@ async function main() {
     create: {
       id: 1,
       channelId,
-      systemPrompt:
-        "You are Salad Overseer. Refer to users as Chefs and earnings as Chopping. Be concise, helpful, and professional. If unsure, ask one clarifying question. Never say 'sorry'.",
+      systemPrompt: prompt,
       maxTokens: 800,
       inactivityMinutes: 5,
       purgeMinutes: 5,
@@ -51,6 +52,4 @@ main()
     console.error(e);
     process.exit(1);
   })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .finally(async () => prisma.$disconnect());
